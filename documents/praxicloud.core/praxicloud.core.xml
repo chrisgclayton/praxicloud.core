@@ -1,0 +1,1697 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>praxicloud.core</name>
+    </assembly>
+    <members>
+        <member name="T:praxicloud.core.buffers.BufferPool">
+            <summary>
+            A buffer pool used to reduce the number of array allocations and resulting Garbage Collections
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.buffers.BufferPool._firstBuffer">
+            <summary>
+            The first buffer in the pool, used to optimize performance
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.buffers.BufferPool._buffers">
+            <summary>
+            The buffers in the pool
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.#ctor(praxicloud.core.buffers.BufferPoolConfiguration)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="configuration">Configuration details defining the allocation behavior of the buffer pool</param>
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.#ctor(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="size">The size of the buffers in the pool</param>
+            <param name="capacity">The capacitity of the buffer pool (number of buffers)</param>
+            <param name="cleanOnReturn">True if the buffer should be cleared of contents when returned to the pool</param>
+        </member>
+        <member name="P:praxicloud.core.buffers.BufferPool.BufferSize">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.buffers.BufferPool.ClearOnReturn">
+            <summary>
+            True if the buffer shoudl be cleared on return
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.Take">
+            <inheritdoc />
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.ScanForAllocation">
+            <summary>
+            Gets an array from the pool or creates one if required
+            </summary>
+            <returns>The buffer from the pool or a newly created one if no available found</returns>
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.Return(System.Byte[])">
+            <inheritdoc />
+        </member>
+        <member name="M:praxicloud.core.buffers.BufferPool.ScanForFree(System.Byte[])">
+            <summary>
+            Iterates through the buffer list to find a slot to return it to
+            </summary>
+            <param name="buffer">The buffer to add back into the pool</param>
+            <returns>True if it was successfully put into a slot</returns>
+        </member>
+        <member name="T:praxicloud.core.buffers.BufferPoolConfiguration">
+            <summary>
+            Configuration details for the buffer pool
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.buffers.BufferPoolConfiguration.Capacity">
+            <summary>
+            The number of buffers in the pool manager
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.buffers.BufferPoolConfiguration.Size">
+            <summary>
+            The size of the buffers used in the pool manager
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.buffers.BufferPoolConfiguration.CleanOnReturn">
+            <summary>
+            True if the buffers should be cleared on return
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.buffers.IBufferPool">
+            <summary>
+            A buffer pool used to reduce the number of array allocations and as a result resulting garbage collections
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.buffers.IBufferPool.BufferSize">
+            <summary>
+            Returns the size of the buffers that the pool allocates
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.buffers.IBufferPool.Return(System.Byte[])">
+            <summary>
+            Returns buffer to the pool.
+            </summary>
+            <param name="buffer">The buffer to add back into the pool</param>
+            <returns>True if it was successfully put into a slot</returns>
+        </member>
+        <member name="M:praxicloud.core.buffers.IBufferPool.Take">
+            <summary>
+            Gets a byte array from the pool
+            </summary>
+            <returns>A byte array from the pool or creating if required</returns>
+        </member>
+        <member name="T:praxicloud.core.configuration.ConfigurationUtilities">
+            <summary>
+            Common configuration related operations
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.ExpandConfigFileName(System.String,System.String)">
+            <summary>
+            Checks to see if the path is fully qualified and if not combines with the config directory
+            </summary>
+            <param name="fileName">The name of the file</param>
+            <param name="defaultSubDirectory">Default directory relative to the current directory that configuration files are stored in if an absolute path is not provided</param>
+            <returns>A fully qualified file name</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.CreateFrom``1(System.String,System.String,System.String,System.String[],System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Create a populated configuration object based on the specified configuration elements
+            </summary>
+            <typeparam name="T">The type of the configuration object to be returned</typeparam>
+            <param name="json">JSON string that is used to configure</param>
+            <param name="fileName">The file name to be loaded or null if none</param>
+            <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
+            <param name="commandLineArguments">Command line arguments to be used for configuration</param>
+            <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
+            <param name="keyVaultOptions">Key fault information to be used for configuration data that are prefixed if one is provided (secrets)</param>
+            <returns>A popualted instance of the configuration object</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:praxicloud.core.configuration.ConfigurationUtilities.CreateFrom(System.Type,System.String,System.String,System.String,System.String[],System.Collections.Generic.Dictionary{System.String,System.String})" -->
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Boolean)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Double)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Byte)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.String)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.TimeSpan)">
+            <summary>
+            Looks up a value in a dictionary of string, object pairs
+            </summary>
+            <param name="dictionary">The dictionary</param>
+            <param name="key">The key to retrieve</param>
+            <param name="defaultValue">The default value to set to if not found</param>
+            <returns>The value retrieved or default if not found or invalid</returns>
+        </member>
+        <member name="T:praxicloud.core.configuration.DoNotOutputAttribute">
+            <summary>
+            An attribute that can be decorated on properties of an object to be sure that the dump method in the service will not
+            output it to the logs (security sensitive data etc. should be decorated with this)
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.configuration.IDependencyService">
+            <summary>
+            An instance that exposes the dependency injection service for instantiated types to receive from the constructor 
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.configuration.IDependencyService.Services">
+            <summary>
+            The dependency injection service provider
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.configuration.PropertyDump">
+            <summary>
+            A set of common utilities to output proeprty inforamtion
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.configuration.PropertyDump.WriteProperty">
+            <summary>
+            Signature of a type that is used to write the property name and value
+            </summary>
+            <param name="propertyName">The name of the property to write</param>
+            <param name="value">The value of the property to write</param>
+            <param name="type">The type of the property</param>
+        </member>
+        <member name="M:praxicloud.core.configuration.PropertyDump.WriteConfiguration(System.Object,praxicloud.core.configuration.PropertyDump.WriteProperty)">
+            <summary>
+            Writes the properties of an instance to a delegate if not decorated with the DoNoTOutput attribute
+            </summary>
+            <param name="item">The item to output</param>
+            <param name="writer">The method to invoke for writing a property value</param>        
+        </member>
+        <member name="T:praxicloud.core.containers.AvailabilityContainerProbe">
+            <summary>
+            A container probe that response to TCP requests when available 
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.AvailabilityContainerProbe._handler">
+            <summary>
+            Checks the availability status
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.AvailabilityContainerProbe.#ctor(System.Net.IPAddress,System.UInt16,System.TimeSpan,praxicloud.core.containers.IAvailabilityCheck)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="address">The IP Address to listen on</param>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="handler">The validation method</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="M:praxicloud.core.containers.AvailabilityContainerProbe.#ctor(System.UInt16,System.TimeSpan,praxicloud.core.containers.IAvailabilityCheck)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="handler">The validation method</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="M:praxicloud.core.containers.AvailabilityContainerProbe.ValidationHandlerAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:praxicloud.core.containers.ContainerEnvironment">
+            <summary>
+            Functionality to determine the details of the container and OS environment
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.CommandLineArgs">
+            <summary>
+            The command line arguments for the current process
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.CommandLine">
+            <summary>
+            The processes command line
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.CurrentProcessStartTime">
+            <summary>
+            Returns the current process start time
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.CurrentProcessName">
+            <summary>
+            Returns the current process name
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.CurrentProcessId">
+            <summary>
+            Returns the current process id
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsARM">
+            <summary>
+            Returns true if the operating system is ARM
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsARM64">
+            <summary>
+            Returns true if the operating system is ARM 64 bit
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsX86">
+            <summary>
+            Returns true if the operating system is X86
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsX64">
+            <summary>
+            Returns true if the operating system is X64
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsProcessARM">
+            <summary>
+            Returns true if the current environment is ARM
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsProcessARM64">
+            <summary>
+            Returns true if the current environment is ARM 64 bit
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsProcessX86">
+            <summary>
+            Returns true if the current environment is X86
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsProcessX64">
+            <summary>
+            Returns true if the current environment is X64
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsWindows">
+            <summary>
+            Returns true if the current environment is Windows
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsLinux">
+            <summary>
+            Returns true if the current environment is Linux
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsMacOS">
+            <summary>
+            Returns true if the current environment is MAC OS
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerEnvironment.IsFreeBSD">
+            <summary>
+            Returns true if the current environment is FreeBSD
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.ContainerLifecycle">
+            <summary>
+            Utilities to monitor and event on Container life cycle events.
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerLifecycle._cancellationSource">
+            <summary>
+            The cancellation token source used to trigger cancellation of the monitoring token
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerLifecycle._taskCompletion">
+            <summary>
+            A task that completes when the cancellation occurs
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerLifecycle.#cctor">
+            <summary>
+            Initializes the Type
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerLifecycle.CancellationToken">
+            <summary>
+            A Cancellation Token that triggers when the container is shutdown
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerLifecycle.Task">
+            <summary>
+            A task that completes when the container is shutdown
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerLifecycle.End">
+            <summary>
+            A method that can be called to artificially trigger a shutdown
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerLifecycle.DefaultUnloading(System.Runtime.Loader.AssemblyLoadContext)">
+            <summary>
+            A handler that is triggered when the entry assembly is unloaded
+            </summary>
+            <param name="context">The assembly context</param>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerLifecycle.CancelKeyPress(System.Object,System.ConsoleCancelEventArgs)">
+            <summary>
+            A handler that is triggered when the container receives a cancel key press
+            </summary>
+            <param name="sender">The object that the invocation is associated with</param>
+            <param name="arguments">The arguments associated with the event</param>
+        </member>
+        <member name="T:praxicloud.core.containers.ContainerProbe">
+            <summary>
+            A container probe that response to TCP requests when healthy or available depending on probe type
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._endpoint">
+            <summary>
+            The Tcp endpoint that will listen for new requests
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._pollInterval">
+            <summary>
+            The interval between polling checks
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._control">
+            <summary>
+            Controls access to the lifecycle methods
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._completionSource">
+            <summary>
+            A completion source that is created when the listener starts and completes when it stops
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._continueProcessing">
+            <summary>
+            True if the processor should continue processing
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._processingTask">
+            <summary>
+            The task representing the processing method
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._address">
+            <summary>
+            The IP Address to listen on
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.ContainerProbe._port">
+            <summary>
+            The port number to listen on all IPv4 endpoints
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.#ctor(System.UInt16,System.TimeSpan)">
+            <summary>
+            Initialize new instance of the type
+            </summary>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.#ctor(System.Net.IPAddress,System.UInt16,System.TimeSpan)">
+            <summary>
+            Initialize new instance of the type
+            </summary>
+            <param name="address">The IP Address to listen on</param>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="validator">The validation method</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="P:praxicloud.core.containers.ContainerProbe.Task">
+            <summary>
+            A task that can be monitored to determine when the probe completes
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.ValidationHandlerAsync">
+            <summary>
+            Validates the status of the probe
+            </summary>
+            <returns>Success if available</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if started successfully</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if stopped successfully</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.ProcessingErrorHandler(System.Exception,System.Boolean,System.Boolean)">
+            <summary>
+            A method that can be overridden to handle error conditions that are raised
+            </summary>
+            <param name="exception">The exception that occurred</param>
+            <param name="terminating">True if the exception is resulting in the accepting of connections being stopped</param>
+            <param name="starting">True if it occurred while starting the listener (true starting, false stopping)</param>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.ProbeReceived">
+            <summary>
+            A delegate invoked when a probe request is received
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.ProbeProcessed">
+            <summary>
+            A delegate invoked when a probe request is processed successfully
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.ContainerProbe.ProcessAsync">
+            <summary>
+            A processor to accept clients
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.HealthContainerProbe">
+            <summary>
+            A container probe that response to TCP requests when available 
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.HealthContainerProbe._handler">
+            <summary>
+            Checks the health status
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.HealthContainerProbe.#ctor(System.Net.IPAddress,System.UInt16,System.TimeSpan,praxicloud.core.containers.IHealthCheck)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="address">The IP Address to listen on</param>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="handler">The validation method</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="M:praxicloud.core.containers.HealthContainerProbe.#ctor(System.UInt16,System.TimeSpan,praxicloud.core.containers.IHealthCheck)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="handler">The validation method</param>
+            <param name="pollingInterval">The interval between polling checks</param>
+        </member>
+        <member name="M:praxicloud.core.containers.HealthContainerProbe.ValidationHandlerAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:praxicloud.core.containers.IAvailabilityCheck">
+            <summary>
+            An interface defining an instance responsible for reporting on service availability
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.IAvailabilityCheck.IsAvailableAsync">
+            <summary>
+            Determines if the service is available
+            </summary>
+            <returns>Returns true if available</returns>
+        </member>
+        <member name="T:praxicloud.core.containers.IAvailabilityContainerProbe">
+            <summary>
+            A container probe that response to probes for availability checks
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.IContainerProbe">
+            <summary>
+            A container probe that response to probes indicating whether a service is healthy or available depending on probe type
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.containers.IContainerProbe.Task">
+            <summary>
+            A task that can be monitored to determine when the probe completes
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.IContainerProbe.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if started successfully</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.IContainerProbe.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if stopped successfully</returns>
+        </member>
+        <member name="T:praxicloud.core.containers.IHealthCheck">
+            <summary>
+            An interface that is responsible for reporting on service health
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.IHealthCheck.IsHealthyAsync">
+            <summary>
+            Checks if the service is healthy
+            </summary>
+            <returns>Returns true if the service is healthy</returns>
+        </member>
+        <member name="T:praxicloud.core.containers.IHealthContainerProbe">
+            <summary>
+            A container probe that response to probes for health checks
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.TcpProbeEndpoint">
+            <summary>
+            The TCP endpoints that listen for probe requests
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.TcpProbeEndpoint.ProbeReceivedHandler">
+            <summary>
+            A delegate invoked when a probe request is received
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.containers.TcpProbeEndpoint.ProbeProcessedHandler">
+            <summary>
+            A delegate invoked when a probe request is processed successfully
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._listener">
+            <summary>
+            Listens for connectivity
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._control">
+            <summary>
+            Controls access to the lifecycle methods
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._completionSource">
+            <summary>
+            A completion source that is created when the listener starts and completes when it stops
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._address">
+            <summary>
+            The IP Address to listen on
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._port">
+            <summary>
+            The port number to listen on all IPv4 endpoints
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._continueProcessing">
+            <summary>
+            True if the processor should continue processing
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._processingTask">
+            <summary>
+            The task representing the processing method
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._receivedHandler">
+            <summary>
+            The handler that is invoked when a connection is received
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.containers.TcpProbeEndpoint._processedHandler">
+            <summary>
+            The handler that is invoked when a connection is processed successfully
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.#ctor(System.UInt16,praxicloud.core.containers.TcpProbeEndpoint.ProbeReceivedHandler,praxicloud.core.containers.TcpProbeEndpoint.ProbeProcessedHandler)">
+            <summary>
+            Initialize new instance of the type
+            </summary>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="processedHandler">The handler that is invoked when a connection is received</param>
+            <param name="receivedHandler">The handler that is invoked when a connection is processed successfully</param>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.#ctor(System.Net.IPAddress,System.UInt16,praxicloud.core.containers.TcpProbeEndpoint.ProbeReceivedHandler,praxicloud.core.containers.TcpProbeEndpoint.ProbeProcessedHandler)">
+            <summary>
+            Initialize new instance of the type
+            </summary>
+            <param name="address">The IP Address to listen on</param>
+            <param name="port">The port number to listen on all IPv4 endpoints</param>
+            <param name="processedHandler">The handler that is invoked when a connection is received</param>
+            <param name="receivedHandler">The handler that is invoked when a connection is processed successfully</param>
+        </member>
+        <member name="P:praxicloud.core.containers.TcpProbeEndpoint.Task">
+            <summary>
+            A task that can be monitored to determine when the probe completes
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if started successfully</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops th probe
+            </summary>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>True if stopped successfully</returns>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.ProcessAsync">
+            <summary>
+            A processor to accept clients
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.ProbeReceived">
+            <summary>
+            Invoked when a probe request is received
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.containers.TcpProbeEndpoint.ProbeProcessed">
+            <summary>
+            Invoked when a probe request is successfully processed
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.exceptions.extensions.ExceptionExtensions">
+            <summary>
+            Extension class used for flattening exceptions
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.exceptions.extensions.ExceptionExtensions.FlattenToString(System.Exception)">
+            <summary>
+            Flattens the exceptions error message including all inner exceptions.
+            </summary>
+            <param name="exception">The exception to flatten.</param>
+            <returns>A string representing the exceptions error message concatenated with the inner exception messages.</returns>
+        </member>
+        <member name="M:praxicloud.core.exceptions.extensions.ExceptionExtensions.IsFatal(System.Exception)">
+            <summary>
+            Determines if any items in the list are typically fatal
+            </summary>
+            <param name="exception">The exception that is being analyzed</param>
+            <returns>True if the exception is fatal</returns>
+        </member>
+        <member name="M:praxicloud.core.exceptions.extensions.ExceptionExtensions.FlattenException(System.Exception)">
+            <summary>
+            Flattens a standard exception object.
+            </summary>
+            <param name="exception">The exception to be flattened.</param>
+            <returns>A string that concatenates all inner exception messages as well.</returns>
+        </member>
+        <member name="M:praxicloud.core.exceptions.extensions.ExceptionExtensions.FlattenAggregateException(System.AggregateException)">
+            <summary>
+            Flattens an aggregate exception object.
+            </summary>
+            <param name="exception">An aggregate exception object to be flattened.</param>
+            <returns>A string that concatenates all inner exception messages as well.</returns>
+        </member>
+        <member name="T:praxicloud.core.exceptions.UnobservedHandlers">
+            <summary>
+            A simple method that handles unobserved task or app domain originating exceptions
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.exceptions.UnobservedHandlers.HandleException">
+            <summary>
+            The signature for an unbserved or unhandled exception handler
+            </summary>
+            <param name="sender">The source of the exception handler</param>
+            <param name="exception">The exception object that was raised</param>
+            <param name="isTerminating">True if the app domain is terminating</param>
+            <param name="sourceType">The source of the invocation (app domain or task scheduler)</param>
+            <returns>True if the exception should be concerned handled</returns>
+        </member>
+        <member name="F:praxicloud.core.exceptions.UnobservedHandlers._handler">
+            <summary>
+            A handler that is invoked when an app domain or task scheduler exception is caught
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.exceptions.UnobservedHandlers.#ctor(praxicloud.core.exceptions.UnobservedHandlers.HandleException)">
+            <summary>
+            A type that is used to handle unobserved app domain or task scheduler exceptions
+            </summary>
+            <param name="handler">A handler that is invoked when an app domain or task scheduler exception is caught</param>
+        </member>
+        <member name="M:praxicloud.core.exceptions.UnobservedHandlers.TestDomainUnhandled(System.Object,System.Boolean)">
+            <summary>
+            Triggers the domain unhandled exceptions
+            </summary>
+            <param name="sender">The caller of the instance</param>
+            <param name="isTerminating">True if the the application is terminating</param>
+        </member>
+        <member name="M:praxicloud.core.exceptions.UnobservedHandlers.TestTaskUnhandled(System.Object)">
+            <summary>
+            Triggers the Task unhandled exceptions
+            </summary>
+            <param name="sender">The caller of the instance</param>
+        </member>
+        <member name="M:praxicloud.core.exceptions.UnobservedHandlers.CurrentDomainUnhandledException(System.Object,System.UnhandledExceptionEventArgs)">
+            <summary>
+            Handles the app domain unhandled exceptions
+            </summary>
+            <param name="sender">The object that invoked the handler</param>
+            <param name="eventArgs">The parameters associated with the unhandled exceptions</param>
+        </member>
+        <member name="M:praxicloud.core.exceptions.UnobservedHandlers.UnobservedTaskExceptionHandler(System.Object,System.Threading.Tasks.UnobservedTaskExceptionEventArgs)">
+            <summary>
+            Handles the task schduler unobserved exceptions
+            </summary>
+            <param name="sender"></param>
+            <param name="eventArgs"></param>
+        </member>
+        <member name="T:praxicloud.core.exceptions.UnobservedType">
+            <summary>
+            Indicates the type of the unobserved or unhandled exception being raised
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.exceptions.UnobservedType.AppDomain">
+            <summary>
+            App domain unhandled exception
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.exceptions.UnobservedType.TaskScheduler">
+            <summary>
+            Task Scheduler unobserved exception
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.performance.IPerformanceConfiguration">
+            <summary>
+            Configuration details for performance optimizations of the host process
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.MinimumWorkerThreads">
+            <summary>
+            The minimum number of worker threads in the thread pool
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.MaximumWorkerThreads">
+            <summary>
+            The maximum number of worker threads in the thread pool
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.MinimumIoCompletionThreads">
+            <summary>
+            The minimum number of I/O completion port threads in the thread pool
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.MaximumIoCompletionThreads">
+            <summary>
+            The maximum number of I/O completion port threads in the thread pool
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.UseCoreMultiplier">
+            <summary>
+            True if the ThreadPool configuration values should be multiplied by the number of cores
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.UseNagle">
+            <summary>
+            True if the NAGLE algorithm should be used for HTTP connections
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.Expect100Continue">
+            <summary>
+            True if the Expect100Contiue should be used for the HTTP connections
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.IPerformanceConfiguration.DefaultConnectionLimit">
+            <summary>
+            The default number of connections to a single HTTP host
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.performance.PerformanceConfiguration">
+            <summary>
+            Configuration details for performance optimizations of the host process
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.MinimumWorkerThreads">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.MaximumWorkerThreads">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.MinimumIoCompletionThreads">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.MaximumIoCompletionThreads">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.UseCoreMultiplier">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.UseNagle">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.Expect100Continue">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.core.performance.PerformanceConfiguration.DefaultConnectionLimit">
+            <inheritdoc />
+        </member>
+        <member name="T:praxicloud.core.performance.PerformanceManager">
+            <summary>
+            A class used to configure performance information
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.performance.PerformanceManager.ConfigureThreadPool(praxicloud.core.performance.IPerformanceConfiguration)">
+            <summary>
+            Configures the threadpool settings based on the details provided in the performance configuration
+            </summary>
+            <param name="configuration">The configuration instance that the ThreadPool settings are based on</param>
+        </member>
+        <member name="M:praxicloud.core.performance.PerformanceManager.ConfigureHttp(praxicloud.core.performance.IPerformanceConfiguration)">
+            <summary>
+            Configures the http settings based on the details provided in the performance configuration
+            </summary>
+            <param name="configuration">The configuration instance that the http settings are based on</param>
+        </member>
+        <member name="T:praxicloud.core.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.AggregateFormatString">
+            <summary>
+              Looks up a localized string similar to {0:s}: {1} -&gt; count: {2}, min: {3}, max: {4}, avg: {5}, sum: {6}, std: {7}, P50: {8}, P90: {9}, P95: {10}, P99: {11}.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.AssignableFrom">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must be assignable to {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.AtLeastElementCount">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must have at least {1} elements..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.CannotBeOutOfRange">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must be in the range of {1} and {2}.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.CollectionCannotBeEmpty">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be an empty collection..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.ConditionNotSatisfied">
+            <summary>
+              Looks up a localized string similar to The parameter {0} did not satisfy the required condition..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.DirectoryExists">
+            <summary>
+              Looks up a localized string similar to The parameter {0} is not a valid directory name or does not exist..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.DirectoryNotExists">
+            <summary>
+              Looks up a localized string similar to The parameter {0} is not a valid directory name or exists..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.ElementCountAtLeast">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must have at least {1} elements but it has {2}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.ElementCountInRange">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must have between {1} and {2} elements but it has {3}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.FileExists">
+            <summary>
+              Looks up a localized string similar to The parameter {0} is not a valid file name or does not exist..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.FileNotExists">
+            <summary>
+              Looks up a localized string similar to The parameter {0} is not a valid file name or exists..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.IndexOutOfRange">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be null and the index must be less than the number of elements..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.InvalidArgumentValue">
+            <summary>
+              Looks up a localized string similar to The parameter {0} was expected to have a value of {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.InvalidEnumValue">
+            <summary>
+              Looks up a localized string similar to The parameter {0} contained a value that was not defined in the enumeration..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.InvalidObserverType">
+            <summary>
+              Looks up a localized string similar to The observer passed to the Subscribe method must be of type Observer&lt;T&gt;..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotDefault">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be the default value for the type..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotInArray">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must contain an element {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotInCollection">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must contain an element {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotLessThan">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be less than {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotMoreThan">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be more than {1}..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotNull">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be null..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be a null or empty string..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.NotNullOrWhitespace">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be a null or empty or all whitespace string..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.SegmentOutOfRange">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be null and the offset +count must be less than the number of elements..
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.StringLengthInRange">
+            <summary>
+              Looks up a localized string similar to The parameter {0} must be a string between the length of {1} and {2} inclusively.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.Properties.Resources.StringMustMatchRegex">
+            <summary>
+              Looks up a localized string similar to The parameter {0} does not match the pattern {1}..
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.reflection.PropertyExpressions">
+            <summary>
+            A container used to keep property related expressions and data together.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.PropertyExpressions.PropertyName">
+            <summary>
+            The name of the proprety that the contained values represents.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.PropertyExpressions.PropertyType">
+            <summary>
+            The type of the property.  
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.PropertyExpressions.GetExpression">
+            <summary>
+            The property getter as a compiled lambda expression.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.PropertyExpressions.SetExpression">
+            <summary>
+            The property setter as a compiled lambda expression.
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.reflection.PropertyExpressions.GetValue``1(``0)">
+            <summary>
+            Simplifies the retrieval of the value from the associated getter.
+            </summary>
+            <typeparam name="T">The type of the object that contains the getter.</typeparam>
+            <param name="containingObject">The object that contains the property.</param>
+            <returns>The value returned from the containingOjbect's getter.</returns>
+        </member>
+        <member name="M:praxicloud.core.reflection.PropertyExpressions.SetValue``1(``0,System.Object)">
+            <summary>
+            Simplifies the setting of the value using the associated setter.
+            </summary>
+            <typeparam name="T">The type of the object that contains the setter.</typeparam>
+            <param name="containingObject">The object that contains the property.</param>
+            <param name="propertyValue">The value to be assigned to the property.</param>
+        </member>
+        <member name="M:praxicloud.core.reflection.PropertyExpressions.GetCompiledSetterExpression(System.Reflection.PropertyInfo)">
+            <summary>
+            Creates a compiled setter expression based on the property information.
+            </summary>
+            <param name="propertyInfo">The property information that the expression is to be based on.</param>
+            <returns>A delegate of the setter or null if it was not valid.</returns>
+        </member>
+        <member name="M:praxicloud.core.reflection.PropertyExpressions.GetCompiledGetterExpression(System.Reflection.PropertyInfo)">
+            <summary>
+            Creates a compiled getter expression based on the property information
+            </summary>
+            <param name="propertyInfo">The property information that the expression is to be based on.</param>
+            <returns>A delegate of the getter or null if it was not valid.</returns>
+        </member>
+        <member name="T:praxicloud.core.reflection.TypeShredder">
+            <summary>
+            Reflection based class that creates delegates (compiled expressions) for property setters and getters.
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.reflection.TypeShredder.#ctor(System.Type,System.Collections.Generic.List{System.String})">
+            <summary>
+            Creates a new instance of the type shredder.
+            </summary>
+            <param name="itemType">The type being shredded.</param>
+            <param name="ignoreList">An optional list of property names to ignore.</param>
+        </member>
+        <member name="M:praxicloud.core.reflection.TypeShredder.GetTypePropertyExpressions(System.Type,System.Collections.Generic.List{System.String})">
+            <summary>
+            Retrieves a list of property expressions based on the type passed in.
+            </summary>
+            <param name="itemType">The type that contains the properties to be shredded.</param>
+            <param name="ignoreList">An optional list of property names to ignore.</param>
+            <returns>A list of property setters and getters.</returns>
+        </member>
+        <member name="P:praxicloud.core.reflection.TypeShredder.TypeRepresented">
+            <summary>
+            The type that was shredded.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.TypeShredder.Name">
+            <summary>
+            The name of the type that was shredded.
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.reflection.TypeShredder.ExpressionList">
+            <summary>
+            A list of expressions based on the properties that were shredded.
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.security.AzureADAuthenticationMode">
+            <summary>
+            The authentication mode
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.AzureADAuthenticationMode.ManagedServiceIdentity">
+            <summary>
+            Managed Service Identity
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.AzureADAuthenticationMode.ClientSecret">
+            <summary>
+            Client Secret
+            </summary>
+        </member>
+        <member name="T:praxicloud.core.security.AzureOauthTokenAuthentication">
+            <summary>
+            Azure AAD authentication for Oauth token access utilities
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.AzureOauthTokenAuthentication.DefaultLoggedContentSizeLimit">
+            <summary>
+            The maximum content size associated with logged content
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.AzureOauthTokenAuthentication.DefaultAuthorityHost">
+            <summary>
+            The default authority host used to authenticate against
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromManagedIdentity">
+            <summary>
+            Gets a managed service identity credential for retrieving Oauth tokens
+            </summary>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromManagedIdentity(Azure.Identity.TokenCredentialOptions)">
+            <summary>
+            Gets a managed service identity credential for retrieving Oauth tokens
+            </summary>
+            <param name="options">The token credential options to use for authenticating</param>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromManagedIdentity(System.String)">
+            <summary>
+            Gets a managed service identity credential for retrieving Oauth tokens
+            </summary>
+            <param name="clientId">The user id to assign the managed identity to</param>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromManagedIdentity(System.String,Azure.Identity.TokenCredentialOptions)">
+            <summary>
+            Gets a managed service identity credential for retrieving Oauth tokens
+            </summary>
+            <param name="clientId">The user id to assign the managed identity to</param>
+            <param name="options">The token credential options to use for authenticating</param>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromClientSecret(System.String,System.String,System.String)">
+            <summary>
+            Retrieves a credential that can retrieve an OAuth token based on a client secret set
+            </summary>
+            <param name="tenantId">The Azure Active Directory tenant id</param>
+            <param name="clientId">The Azure Active Directory client id (application id)</param>
+            <param name="clientSecret">The Azure Active Directory client secret</param>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOauthTokenCredentialFromClientSecret(System.String,System.String,System.String,Azure.Identity.TokenCredentialOptions)">
+            <summary>
+            Retrieves a credential that can retrieve an OAuth token based on a client secret set
+            </summary>
+            <param name="tenantId">The Azure Active Directory tenant id</param>
+            <param name="clientId">The Azure Active Directory client id (application id)</param>
+            <param name="clientSecret">The Azure Active Directory client secret</param>
+            <param name="options">The token credential options to use for authenticating</param>
+            <returns>The associated token credential instance</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.GetOptions(System.Uri)">
+            <summary>
+            Creates a basic token credential options instance with the authority host set
+            </summary>
+            <param name="authorityHost">The authroity host to use or the default if null</param>
+            <returns>An instance of the credential options</returns>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.ConfigureRetries(Azure.Identity.TokenCredentialOptions,Azure.Core.RetryMode,System.Int32,System.TimeSpan,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Configures the retries on an options instance
+            </summary>
+            <param name="options">The options instance</param>
+            <param name="mode">The retry mode</param>
+            <param name="maximumRetries">The maximum retries to be performed</param>
+            <param name="delay">The delay before invoking the first retry</param>
+            <param name="maximumDelay">The maximum delay allowed between retries</param>
+            <param name="networkTimeout">The network timeout for a single operation</param>
+        </member>
+        <member name="M:praxicloud.core.security.AzureOauthTokenAuthentication.ConfigureDiagnostics(Azure.Identity.TokenCredentialOptions,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Configures the diagnostics information associated with a credential option
+            </summary>
+            <param name="options">The option instance</param>
+            <param name="applicationId">The application id</param>
+            <param name="isDistributedTracingEnabled">True if distributed tracing is in use</param>
+            <param name="isLoggingContentEnabled">True if logging of content is enabled</param>
+            <param name="isLoggingEnabled">True if logging is enabled</param>
+            <param name="isTelemetryEnabled">True if telemetry is enabled</param>
+            <param name="loggingContentSizeLimit">The maximum size of the content being logged</param>
+        </member>
+        <member name="T:praxicloud.core.security.CertificateValidation">
+            <summary>
+            Methods to handle validation of certificates through the remote certificate callback handlers
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.CertificateValidation.CertificateValidationCallBackAllowsSelfSigned(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            This certificate validation callback is a useful one for allowing self signed certificates
+            </summary>
+            <param name="sender">The calling object</param>
+            <param name="certificate">The X509 certificate to be validated</param>
+            <param name="chain">The associated certificate chain</param>
+            <param name="sslPolicyErrors">A list of ssl policy errors</param>
+            <returns>True if the certificate is valid, false otherwise</returns>
+        </member>
+        <member name="M:praxicloud.core.security.CertificateValidation.CertificateValidationCallBack(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            This certificate validation callback is a useful one for allowing self signed certificates
+            </summary>
+            <param name="sender">The calling object</param>
+            <param name="certificate">The X509 certificate to be validated</param>
+            <param name="chain">The associated certificate chain</param>
+            <param name="sslPolicyErrors">A list of ssl policy errors</param>
+            <returns>True if the certificate is valid, false otherwise</returns>
+        </member>
+        <member name="T:praxicloud.core.security.Guard">
+            <summary>
+            A set of methods used to validate publicly input parameters.
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotNull``1(System.String,``0)">
+            <summary>
+            Tests to make sure the supplied parameter value is not null.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotDefault``1(System.String,``0)">
+            <summary>
+            Tests to make sure the supplied parameter is not the default value for the type.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotNullOrEmpty(System.String,System.String)">
+            <summary>
+            Tests to make sure the supplied string parameter is not null or empty.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotNullOrWhitespace(System.String,System.String)">
+            <summary>
+            Tests to make sure the supplied string parameter is not null or all whitespace.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.StringLengthInRange(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Tests to make sure the supplied string parameter is in the desired length range inclusively
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimum">The minimum length of the string inclusively</param>
+            <param name="maximum">The maximum length of the string inclusively</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.DirectoryExists(System.String,System.String)">
+            <summary>
+            Tests to see if the directory provided in the parameter value exists.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.DirectoryNotExists(System.String,System.String)">
+            <summary>
+            Tests to see if the directory provided in the parameter value exists.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.FileExists(System.String,System.String)">
+            <summary>
+            Tests to see if the file provided in the parameter value exists.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.FileNotExists(System.String,System.String)">
+            <summary>
+            Tests to make sure the file provided in the parameter does not exist.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.DateTime,System.DateTime)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.Double,System.Double)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.Int64,System.Int64)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The maximum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.DateTime,System.DateTime)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.Double,System.Double)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The maximum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.Int64,System.Int64)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The maximum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.UInt64,System.UInt64)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The maximum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotMoreThan(System.String,System.Single,System.Single)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="maximumValue">The maximum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.UInt64,System.UInt64)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.NotLessThan(System.String,System.Single,System.Single)">
+            <summary>
+            Tests to make sure the supplied parameter value is not less than the minimum value.  If it is a Guard Exception will be raised.
+            </summary>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumValue">The minimum allowable value of the parameter.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.IndexNotOutOfRange``1(System.String,System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Tests to make sure that a parameter representing a buffer position offset is not outside of the allowable bounds the specified enumerable.
+            </summary>
+            <typeparam name="T">The type of elements in the enumerable.</typeparam>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="items">The enumeration of items being validated againts.</param>
+            <param name="offset">The offset that must exist within the bounds.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.SegmentNotOutOfRange``1(System.String,System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32)">
+            <summary>
+            Tests to make sure that the beginning and end of the segment provided will not be outside of the enumerables bounds. 
+            </summary>
+            <typeparam name="T">The type of the elements in the enumerable.</typeparam>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="items">The enumeration of items being validated against.</param>
+            <param name="offset">The offset that the segment starts at.</param>
+            <param name="count">The number of elements in the segment.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.IsAssignableTo``1(System.String,System.Object)">
+            <summary>
+            Raises a GuardException if the value is not assignable to the desired type.
+            </summary>
+            <typeparam name="T">The type that the value must be assignable from.</typeparam>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.ElementCountInRange``1(System.String,``0[],System.Int32,System.Int32)">
+            <summary>
+            Raises a GuardException if the value of the paraemter has more or less elements than identified.
+            </summary>
+            <typeparam name="T">The type of the array being validated.</typeparam>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumNumberOfElements">The minimum number of elements the array must contain.</param>
+            <param name="maximumNumberOfElements">The maximum number of elements the array must contain.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.ElementCountAtLeast``1(System.String,``0[],System.Int32)">
+            <summary>
+            Raises a GuardException if the value of the paraemter has less elements than identified.
+            </summary>
+            <typeparam name="T">The type of the array being validated.</typeparam>
+            <param name="parameterName">The name of the parameter being validated.</param>
+            <param name="parameterValue">The value of the parameter being validated.</param>
+            <param name="minimumNumberOfElements">The minimum number of elements the array must contain.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.CollectionNotEmpty``1(System.String,System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Checks whether or not the specified collection is empty.
+            </summary>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValues">The values of the argument.</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.IsEqual``1(System.String,``0,``0)">
+            <summary>
+            Checks an argument to ensure its value is expected value
+            </summary>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValue">The value of the argument.</param>
+            <param name="expectedValue">The expected value of the argument.</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.MatchesRegex(System.String,System.String,System.String)">
+            <summary>
+            Checks that string argument value matches the given regex.
+            </summary>
+            <param name="argumentValue">The value of the argument.</param>
+            <param name="pattern">The regex pattern match.</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>       
+        </member>
+        <member name="M:praxicloud.core.security.Guard.SatisfyCondition``1(System.String,System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Checks that all values of the specified argument satisfy a given condition.
+            </summary>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValues">The values of the argument.</param>
+            <param name="predicate">The condition to satisfy.</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.InRange``1(System.String,``0,``0,``0)">
+            <summary>
+            Checks if the supplied argument falls into the given range of values.
+            </summary>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValue">The value of the argument.</param>
+            <param name="minValue">The minimum allowed value of the argument.</param>
+            <param name="maxValue">The maximum allowed value of the argument.</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.InCollection``1(System.String,``0,System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Checks if the supplied argument present in the collection of possible values.
+            </summary>
+            <remarks>
+            Comparison is case sensitive
+            </remarks>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValue">The value of the argument.</param>
+            <param name="collection">Collection of possible values</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.InArray``1(System.String,``0,``0[])">
+            <summary>
+            Checks if the supplied argument present in the collection of possible values.
+            </summary>
+            <remarks>
+            Comparison is case sensitive
+            </remarks>
+            <typeparam name="T">The type of the argument.</typeparam>
+            <param name="argumentValue">The value of the argument.</param>
+            <param name="array">Array of possible values</param>
+            <param name="parameterName">The name of the parameter for diagnostic purposes.</param>
+        </member>
+        <member name="M:praxicloud.core.security.Guard.EnumValueIsDefined``2(System.String,``1)">
+            <summary>
+            Checks an enum instance to ensure that its value is defined by the specified enum type.
+            </summary>
+            <typeparam name="T">The type of the enum.</typeparam>
+            <typeparam name="TValue">The value of the parameter being validated.</typeparam>
+            <param name="enumValue">The enum value to check.</param>
+            <param name="parameterName">The name of the parameter holding the value.</param>
+            <remarks>
+            This method does not currently support Flags enums.
+            The constraint on the method should be updated to "enum" once the C# compiler supports it.
+            </remarks>
+        </member>
+        <member name="T:praxicloud.core.security.GuardException">
+            <summary>
+            An exception derived from ArgumentException to allow handlers to take special actions in handling
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.GuardException.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the GuardException class with a specified error message and the parameter name that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception. </param>
+            <param name="paramName">The name of the parameter that caused the current exception. </param>
+        </member>
+        <member name="T:praxicloud.core.security.ISecretManager">
+            <summary>
+            A secret store
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.ISecretManager.GetSecretAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves a secret from the secret store
+            </summary>
+            <param name="secretName">The name of the secret to retrieve</param>
+            <param name="version">The version of the secret or null for latest</param>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>The value is the secret that was retrieved or null if the operation was not successful, but returned an exception</returns>
+        </member>
+        <member name="M:praxicloud.core.security.ISecretManager.GetSecretAsync``1(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves an object based on the secret content
+            </summary>
+            <typeparam name="T">The type of object to return the secret content as</typeparam>
+            <param name="secretName">The name of the secret to retrieve</param>
+            <param name="version">The version of the secret or null for latest</param>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>The value is the object returned from the store in the representation of the generic</returns>
+        </member>
+        <member name="M:praxicloud.core.security.ISecretManager.GetCertificateAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the latest version of the certificate from the key vault with the associated policies
+            </summary>
+            <param name="certificateName">The name of the certificate</param>
+            <param name="version">The version of the certificate or null for latest</param>
+            <param name="cancellationToken">A token to monitor for abort requests</param>
+            <returns>The value is the certificate or null if the operation was not successful, but returned an exception</returns>
+        </member>
+        <member name="T:praxicloud.core.security.SecretStoreResponse">
+            <summary>
+            Stores a response from a secret store
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.security.SecretStoreResponse.StatusCode">
+            <summary>
+            The status code that was returned
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.security.SecretStoreResponse.IsSuccessCode">
+            <summary>
+            True if the status code indicates a success
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.security.SecretStoreResponse.TimeToExecute">
+            <summary>
+            The time it took for the operation to execute
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.security.SecretStoreResponse.Exception">
+            <summary>
+            If an exception was raised it is populate in it
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.SecretStoreResponse.op_Implicit(praxicloud.core.security.SecretStoreResponse)~System.Boolean">
+            <summary>
+            Implicit conversion to boolean where true indicates successful execution
+            </summary>
+            <param name="response">The secrete store response to cast</param>
+        </member>
+        <member name="T:praxicloud.core.security.SecretStoreResponse`1">
+            <summary>
+            Stores a response from a secret store
+            </summary>
+        </member>
+        <member name="P:praxicloud.core.security.SecretStoreResponse`1.Value">
+            <summary>
+            The value of the response
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.SecretStoreResponse`1.op_Implicit(praxicloud.core.security.SecretStoreResponse{`0})~`0">
+            <summary>
+            Implicit conversion to the type where the value if successfully executed is returned
+            </summary>
+            <param name="response">The secrete store response to cast</param>
+        </member>
+        <member name="T:praxicloud.core.security.SecureStringUtilities">
+            <summary>
+            Contains common secure string handling methods.
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.SecureStringUtilities.GetSecureString(System.String)">
+            <summary>
+            Creates a secure string based on the contents of the provided string.
+            </summary>
+            <param name="value">The string holding the contents of the secure string.</param>
+            <returns>A populated secure string that contains the value specified in the string parameter.</returns>
+        </member>
+        <member name="M:praxicloud.core.security.SecureStringUtilities.SecureStringToString(System.Security.SecureString)">
+            <summary>
+            Creates a CLR string based on the provided secure string value.
+            </summary>
+            <param name="value">The secure string that contains the value to be placed in the CLR string.</param>
+            <returns></returns>
+        </member>
+        <member name="T:praxicloud.core.security.SharedAccessTokens">
+            <summary>
+            A simple shared access signature helper type
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.SharedAccessTokens.SharedAccessSignatureFormat">
+            <summary>
+            The formatting of the shared access signature string
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.SharedAccessTokens.ExpiryDelimeter">
+            <summary>
+            The delimeter between the shared access slignature and expiry details
+            </summary>
+        </member>
+        <member name="F:praxicloud.core.security.SharedAccessTokens.PolicyDelimeter">
+            <summary>
+            The key name if provided
+            </summary>
+        </member>
+        <member name="M:praxicloud.core.security.SharedAccessTokens.GenerateSasToken(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Create a SAS token for the URI based on the specified policy
+            </summary>
+            <param name="resourceUri">The URI of the resource to access</param>
+            <param name="key">The shared access signature to encode the string with</param>
+            <param name="policyName">The name of the policy to create the shared access policy with</param>
+            <param name="expiryInSeconds">The duration the token is valid for</param>
+            <returns>A string representation of the shared access signature</returns>
+        </member>
+    </members>
+</doc>

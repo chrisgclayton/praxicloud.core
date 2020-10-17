@@ -17,6 +17,10 @@ jobs:
       with:
         dotnet-version: 3.1.301
         source-url: ${{secrets.REPO_NUGET_SOURCE}}
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NUGET_SOURCE: ${{secrets.REPO_NUGET_SOURCE}}
+        NUGET_USER: ${{secrets.REPO_USER_NAME}}
     - name: Update Packaging Version
       run: sed -i "s/<Version>1.0.1<\/Version>/<Version>1.3.$(date +%Y)$(date +%m)$(date +%d).$GITHUB_RUN_NUMBER<\/Version>/g" ./src/common.props      
     - name: Install Nuget Dependencies
@@ -28,4 +32,4 @@ jobs:
     - name: Package library
       run: dotnet pack --configuration Release ./src/praxicloud.core/praxicloud.core.csproj
     - name: Push library package to GitHub NUGET Feed
-      run: nuget push ./src/praxicloud.core/bin/Release/*.nupkg -SkipDuplicate -ApiKey ${{secrets.REPO_API_KEY}}   
+      run: nuget push ./src/praxicloud.core/bin/Release/*.nupkg -SkipDuplicate -ApiKey ${{secrets.GITHUB_TOKEN}}   

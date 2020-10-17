@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>praxicloud.core</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>PraxiCloud.Core</PackageId>
+    <PackageId>PraxiCloud-Core</PackageId>
     <Description>PraxiCloud libraries offer a range of common functions, features and base classes to use when building solutions, increasing the time to delivery.</Description>
     <PackageTags>praxicloud utilities core common commoncore container buffers security guard</PackageTags>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>

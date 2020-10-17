@@ -74,7 +74,6 @@ namespace praxicloud.core.containers
         /// </summary>
         /// <param name="address">The IP Address to listen on</param>
         /// <param name="port">The port number to listen on all IPv4 endpoints</param>
-        /// <param name="validator">The validation method</param>
         /// <param name="pollingInterval">The interval between polling checks</param>
         public ContainerProbe(IPAddress address, ushort port, TimeSpan pollingInterval)
         {

@@ -1,4 +1,4 @@
-name: .NET Core
+name: Publish to Public NUGET (Nuget.Org)
 
 on:
   workflow_dispatch:

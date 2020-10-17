@@ -60,6 +60,16 @@ namespace praxicloud.core.security
             return token;
         }
 
+        /// <summary>
+        /// Breaks a SAS token into its elements and returns true if successful
+        /// </summary>
+        /// <param name="accessToken">The access token to decompose</param>
+        /// <param name="resourceUri">The resource URI from the access token</param>
+        /// <param name="policyName">The policy name from the access token</param>
+        /// <param name="expiresAt">When the access token expires</param>
+        /// <param name="stringToValidate">The string that is to be validated with the signature</param>
+        /// <param name="signature">The signature to validate with</param>
+        /// <returns>True if the required elements are present</returns>
         public static bool DecomposeSasToken(string accessToken, out string resourceUri, out string policyName, out DateTime expiresAt, out string stringToValidate, out byte[] signature)
         {
             const string Prefix = "SharedAccessSignature ";
@@ -128,6 +138,13 @@ namespace praxicloud.core.security
             return resourceUriFound && policyNameFound && expiresAtFound && signatureFound && !additionalElements;
         }
 
+        /// <summary>
+        /// Validates a ASA token with a signature
+        /// </summary>
+        /// <param name="signature">The signature to validate</param>
+        /// <param name="key">The key that is used for validation</param>
+        /// <param name="stringToValidate">The string that is to be validated</param>
+        /// <returns>True if the signature matches the validated signature</returns>
         public static bool IsSignatureValid(byte[] signature, string key, string stringToValidate)
         {
             var valid = false;

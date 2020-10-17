@@ -40,7 +40,6 @@ namespace praxicloud.core.configuration
         /// <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
         /// <param name="commandLineArguments">Command line arguments to be used for configuration</param>
         /// <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
-        /// <param name="keyVaultOptions">Key fault information to be used for configuration data that are prefixed if one is provided (secrets)</param>
         /// <returns>A popualted instance of the configuration object</returns>
         public static T CreateFrom<T>(string json, string fileName, string defaultSubDirectory = null, string[] commandLineArguments = null, Dictionary<string, string> memoryValues = null) where T : class
         {
@@ -56,7 +55,6 @@ namespace praxicloud.core.configuration
         /// <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
         /// <param name="commandLineArguments">Command line arguments to be used for configuration</param>
         /// <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
-        /// <param name="keyVaultOptions">Key fault information to be used for configuration data 
         public static object CreateFrom(Type configurationType, string json, string fileName, string defaultSubDirectory = null, string[] commandLineArguments = null, Dictionary<string, string> memoryValues = null)
         {
             var builder = new ConfigurationBuilder();

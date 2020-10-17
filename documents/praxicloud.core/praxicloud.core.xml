@@ -126,10 +126,19 @@
             <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
             <param name="commandLineArguments">Command line arguments to be used for configuration</param>
             <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
-            <param name="keyVaultOptions">Key fault information to be used for configuration data that are prefixed if one is provided (secrets)</param>
             <returns>A popualted instance of the configuration object</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:praxicloud.core.configuration.ConfigurationUtilities.CreateFrom(System.Type,System.String,System.String,System.String,System.String[],System.Collections.Generic.Dictionary{System.String,System.String})" -->
+        <member name="M:praxicloud.core.configuration.ConfigurationUtilities.CreateFrom(System.Type,System.String,System.String,System.String,System.String[],System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Create a populated configuration object based on the specified configuration elements
+            </summary>
+            <param name="configurationType">The type of the configuration object to be returned</param>
+            <param name="json">JSON string that is used to configure</param>
+            <param name="fileName">The file name to be loaded or null if none</param>
+            <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
+            <param name="commandLineArguments">Command line arguments to be used for configuration</param>
+            <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
+        </member>
         <member name="M:praxicloud.core.configuration.ConfigurationUtilities.GetFromDictionary(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Boolean)">
             <summary>
             Looks up a value in a dictionary of string, object pairs
@@ -446,7 +455,6 @@
             </summary>
             <param name="address">The IP Address to listen on</param>
             <param name="port">The port number to listen on all IPv4 endpoints</param>
-            <param name="validator">The validation method</param>
             <param name="pollingInterval">The interval between polling checks</param>
         </member>
         <member name="P:praxicloud.core.containers.ContainerProbe.Task">
@@ -1692,6 +1700,27 @@
             <param name="policyName">The name of the policy to create the shared access policy with</param>
             <param name="expiryInSeconds">The duration the token is valid for</param>
             <returns>A string representation of the shared access signature</returns>
+        </member>
+        <member name="M:praxicloud.core.security.SharedAccessTokens.DecomposeSasToken(System.String,System.String@,System.String@,System.DateTime@,System.String@,System.Byte[]@)">
+            <summary>
+            Breaks a SAS token into its elements and returns true if successful
+            </summary>
+            <param name="accessToken">The access token to decompose</param>
+            <param name="resourceUri">The resource URI from the access token</param>
+            <param name="policyName">The policy name from the access token</param>
+            <param name="expiresAt">When the access token expires</param>
+            <param name="stringToValidate">The string that is to be validated with the signature</param>
+            <param name="signature">The signature to validate with</param>
+            <returns>True if the required elements are present</returns>
+        </member>
+        <member name="M:praxicloud.core.security.SharedAccessTokens.IsSignatureValid(System.Byte[],System.String,System.String)">
+            <summary>
+            Validates a ASA token with a signature
+            </summary>
+            <param name="signature">The signature to validate</param>
+            <param name="key">The key that is used for validation</param>
+            <param name="stringToValidate">The string that is to be validated</param>
+            <returns>True if the signature matches the validated signature</returns>
         </member>
     </members>
 </doc>

@@ -817,9 +817,3 @@ namespace praxicloud.core.tests.configuration
     }
 }
 
-
-/*
-
-        public static void AddOptions<T>(IServiceCollection servicesCollection, IConfiguration configuration) where T : class
-
- */

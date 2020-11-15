@@ -547,19 +547,67 @@ The security functions provided include functionality include tasks associated w
 
 |Class| Description | Notes |
 | ------------- | ------------- | ------------- |
-|**AzureOauthTokenAuthentication**|TBD| TBD |
-|**CertificateValidation**|TBD| TBD |
-|**Guard**|TBD| TBD |
-|**ISecretManager**|TBD| TBD |
-|**SecureStringUtilities**|TBD| TBD |
-|**SharedAccessTokens**|TBD| TBD |
+|**AzureOauthTokenAuthentication**|Helper utilities to use Azure Active Directory to retrieve Oauth tokens based on different authentication modes.<br />***GetOauthTokenCredentialFromManagedIdentity*** retrieves the token credential provider for scenarios that use Azure Managed Identity.<br />***GetOauthTokenCredentialFromClientSecret*** retrieves the token credential provider using authentication based on a service principal or application registration (tenant id, client id and client secret).| Ideal usage is to use managed identity when appropriate to reduce the requirements to store security credentials for the application to access. |
+|**CertificateValidation**|Performs common certificate validation operations.<br />***CertificateValidationCallBack*** implements the remote server certificate callback to only allow certificates that pass all security validation tests.<br />***CertificateValidationCallBackAllowsSelfSigned*** implements the remote server certificate callback to only allow certificates that pass all security validation tests except it allows self signed.| Self signed certificates should only be used for development purposes if possible. |
+|**Guard**|Offers a wide range of parameter fuzzing / validation methods. If a validation is failed a GuardException is raised, making consumers logic easier for differentiating between a parameter validation issue and other application logic error.<br />While the options are numerous a few very common validation methods include the following.<br />***NotNull*** ensures that the parameter value provided is not null.<br />***NotNullOrWhitespace*** ensures that the string parameter is not null, empty or white space.<br />***NotLessThanTimeSpanSuccessTest*** makes sure the provided numeric value is not less than the specified value.| The guard method exceptions have the error messages stored in a resource file making it possible to localize if desired. |
+|**ISecretManager**|Types that implement this interface provide easy access to retrieve secrets and certificates.| While no concrete implementation exists in this library others do offer it. |
+|**SecureStringUtilities**|Helpers when working with secure strings. <br />***GetSecureString*** an extension method that creates a secure string object based on the contents of the string.<br />***SecureStringToString*** an extension method that creates a CLR string based on the secure string provided.| Careful attention should be taken when working with secure strings that the in memory clear text representations are contained and do not exist when possible. |
+|**SharedAccessTokens**|Helper to generate, decompose and validate shared access tokens.<br />***GenerateSasToken*** creates a SAS token for the URI based on the specified policy.<br />***DecomposeSasToken*** breaks a SAS token into its elements.<br />***IsSignatureValid*** Validates the SAS token with a signature based on the provided key.|  |
 
 ## Sample Usage
 
-### TBD
+### Retrieve Token Credential Provider Using Client Secrets
 
 ```csharp
+var credential = AzureOauthTokenAuthentication.GetOauthTokenCredentialFromClientSecret(tenantId, clientId, clientSecret);
+```
 
+### Retrieve Token Credential Provider Using Managed Service Provider
+
+```csharp
+var credential = AzureOauthTokenAuthentication.GetOauthTokenCredentialFromManagedIdentity();
+```
+
+### Person Parameter is Not Null and Age Parameter  is Not Less Than 5
+
+```csharp
+void SetPersonAge(Person person, int age)
+{
+    Guard.NotNull(nameof(person), person);
+    Guard.NotLessThanTimeSpanSuccessTest(nameof(age), age, 5);
+}
+```
+
+### Retrieve a CLR String Value, Convert it to a Secure String and Back
+
+```csharp
+using praxicloud.core.security;
+
+...
+
+void TestConversion(string clearText)
+{
+    var secure = clearText.GetSecureString();
+    var plainText = secure.SecureStringToString();
+}
+```
+
+### Generate and Decompose a SAS Token
+
+```csharp
+using praxicloud.core.security;
+
+public void GenerateAndDecomposeToken(string resourceUri, string key, string policyName, int expiryInSeconds)
+{
+    var token = SharedAccessTokens.GenerateSasToken(resourceUri, key, policyName, expiryInSeconds);
+
+    Console.WriteLine(token);
+    
+    if(SharedAccessTokens.DecomposeSasToken(token, out var outputResourceUri, out var outputPolicyName, out var expiresAtTime, out var stringToValidate, out var signature))
+    {
+	Console.WriteLine($"The token was decomposed for resource {outputResourceUri}");
+    }
+}
 ```
 
 ## Additional Information

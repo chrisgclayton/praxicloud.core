@@ -139,7 +139,7 @@ namespace praxicloud.core.security
         }
 
         /// <summary>
-        /// Validates a ASA token with a signature
+        /// Validates a SAS token with a signature
         /// </summary>
         /// <param name="signature">The signature to validate</param>
         /// <param name="key">The key that is used for validation</param>

@@ -613,3 +613,50 @@ public void GenerateAndDecomposeToken(string resourceUri, string key, string pol
 ## Additional Information
 
 For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core/praxicloud.core.xml), can be viewed using your favorite documentation viewer.
+
+
+
+
+# Math
+
+Helper methods typically associated with aggregate values across a population. These support various aggregates that are normally associated with performance analysis and operations such as 95th percentile.
+
+## Key Types and Interfaces
+
+|Class| Description | Notes |
+| ------------- | ------------- | ------------- |
+|**Aggregates**|Helper utilities to perform aggregations on sets of values.<br />***Quantile*** Determines the percentile specified (e.g. 98th percentile).<br />***StandardDeviation*** calculates the standard deviation for the set of values.<br />***GetPerformanceAggregates*** calculates the common aggregates when operating solutions and managing ongoing performance.| Other libraries offer these calculations but in some scenarios result in slower performance for hot path scenarios. |
+
+## Sample Usage
+
+### Calculate the 95th Percentile
+
+```csharp
+var generator = new Random();
+var values = new double[100];
+
+for (var index = 0; index < values.Length; index++)
+{
+    values[index] = Math.Round(generator.NextDouble(), 4);
+}
+
+var percentile = Aggregates.Quantile(values, 0.50, false).Value;
+```
+
+### Peform Aggregation for Common Performance and Operations
+
+```csharp
+var generator = new Random();
+var values = new double[100];
+
+for (var index = 0; index < values.Length; index++)
+{
+    values[index] = Math.Round(generator.NextDouble(), 4);
+}
+
+Aggregates.GetPerformanceAggregates(values, out var maximum, out var minimum, out var mean, out var sum, out var standardDeviation, out var p50, out var p90, out var p95, out var p98, out var p99);
+```
+
+## Additional Information
+
+For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core/praxicloud.core.xml), can be viewed using your favorite documentation viewer.

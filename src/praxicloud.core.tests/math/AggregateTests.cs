@@ -6,7 +6,6 @@ namespace praxicloud.core.tests.math
     #region Using Clauses
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Diagnostics.CodeAnalysis;
-    using MathNet.Numerics.Statistics;
     using System.Linq;
     using praxicloud.core.math;
     using System;
@@ -69,7 +68,7 @@ namespace praxicloud.core.tests.math
         [DataTestMethod]
         public void TestMeanAccuracy(double[] values)
         {
-            var mathnetValue = Statistics.Mean(values);
+            var mathnetValue = values.Sum() / values.Length;
             var aggregatesValue = Aggregates.Mean(values).Value;
 
             mathnetValue = Math.Round(mathnetValue, 6);

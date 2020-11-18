@@ -49,6 +49,8 @@ namespace praxicloud.core.tests.containers
 
             }
 
+            Task.Delay(1000).GetAwaiter().GetResult();
+
             Assert.IsTrue(ContainerLifecycle.CancellationToken.IsCancellationRequested, "Cancellation token was not triggered");
             Assert.IsTrue(count == 1, "Count was not expected");
         }

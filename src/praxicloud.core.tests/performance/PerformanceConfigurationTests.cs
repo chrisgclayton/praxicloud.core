@@ -10,6 +10,7 @@ namespace praxicloud.core.tests.performance
     using praxicloud.core.performance;
     using System.Threading;
     using System.Net;
+    using System.Threading.Tasks;
     #endregion
 
     /// <summary>
@@ -118,6 +119,8 @@ namespace praxicloud.core.tests.performance
 
             ThreadPool.GetMinThreads(out var minimumWorkerThreads, out var minimumCompletionThreads);
             ThreadPool.GetMaxThreads(out var maximumWorkerThreads, out var maximumCompletionThreads);
+
+            Task.Delay(1000).GetAwaiter().GetResult();
 
             Assert.IsTrue((valuesSet.MaximumIoCompletionThreads.Value * Environment.ProcessorCount) == maximumCompletionThreads, "Not set maximum completion not expected");
             Assert.IsTrue((valuesSet.MaximumWorkerThreads.Value * Environment.ProcessorCount) == maximumWorkerThreads, "Not set maximum worker not expected");

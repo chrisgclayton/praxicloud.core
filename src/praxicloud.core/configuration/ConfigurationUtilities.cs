@@ -87,6 +87,72 @@ namespace praxicloud.core.configuration
         }
 
         /// <summary>
+        /// Create a populated configuration object based on the specified configuration elements
+        /// </summary>
+        /// <typeparam name="T">The type of the configuration object to be returned</typeparam>
+        /// <param name="json">JSON string that is used to configure</param>
+        /// <param name="fileName">The file name to be loaded or null if none</param>
+        /// <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
+        /// <param name="commandLineArguments">Command line arguments to be used for configuration</param>
+        /// <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
+        /// <returns>A popualted instance of the configuration object</returns>
+        /// <param name="environmentVariablePrefix">The prefix of the environment variables to use when looking up</param>
+        public static T CreateFromWithPrefix<T>(string environmentVariablePrefix, string json, string fileName, string defaultSubDirectory = null, string[] commandLineArguments = null, Dictionary<string, string> memoryValues = null) where T : class
+        {
+            return (T)CreateFromWithPrefix(typeof(T), environmentVariablePrefix, json, fileName, defaultSubDirectory, commandLineArguments, memoryValues);
+        }
+
+        /// <summary>
+        /// Create a populated configuration object based on the specified configuration elements
+        /// </summary>
+        /// <param name="configurationType">The type of the configuration object to be returned</param>
+        /// <param name="json">JSON string that is used to configure</param>
+        /// <param name="fileName">The file name to be loaded or null if none</param>
+        /// <param name="defaultSubDirectory">Default subdirectory the file is located in if not in the current directory or fully qualified</param>
+        /// <param name="commandLineArguments">Command line arguments to be used for configuration</param>
+        /// <param name="memoryValues">An in memory collection that is used to populate configuraiton data</param>
+        /// <param name="environmentVariablePrefix">The prefix of the environment variables to use when looking up</param>
+        public static object CreateFromWithPrefix(Type configurationType, string environmentVariablePrefix, string json, string fileName, string defaultSubDirectory = null, string[] commandLineArguments = null, Dictionary<string, string> memoryValues = null)
+        {
+            var builder = new ConfigurationBuilder();
+
+            if (memoryValues != null && memoryValues.Count > 0) builder.AddInMemoryCollection(memoryValues);
+
+            if (!string.IsNullOrWhiteSpace(environmentVariablePrefix))
+            {
+                builder.AddEnvironmentVariables(environmentVariablePrefix);
+            }
+            else
+            {
+                builder.AddEnvironmentVariables();
+            }
+
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                fileName = ExpandConfigFileName(fileName, defaultSubDirectory);
+                builder.AddJsonFile(fileName, true);
+            }
+
+            if (commandLineArguments != null && commandLineArguments.Length > 0) builder.AddCommandLine(commandLineArguments);
+
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+            }
+
+            IConfigurationRoot root = null;
+
+            root = builder.Build();
+
+            var configuration = Activator.CreateInstance(configurationType);
+
+            root.Bind(configuration);
+
+            return configuration;
+        }
+
+
+        /// <summary>
         /// Looks up a value in a dictionary of string, object pairs
         /// </summary>
         /// <param name="dictionary">The dictionary</param>
